@@ -85,8 +85,8 @@ class UserInDB(DateTimeModelMixin, UserBase):
 class UserPublic(DateTimeModelMixin, UserBase):
     user_name: str
     email: EmailStr
-    access_token: str
-    refresh_token: str
+    access_token: Optional[str]
+    refresh_token: Optional[str]
 
     class Config:
         orm_mode = True
