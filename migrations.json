@@ -3,7 +3,7 @@
   "directory": "migrations",
   "history": "migratehistory",
   "models": [
-    "backend.User",
-    "backend.UserIpDetail"
+    "backend.user.models.User",
+    "backend.task.models.UserIpDetail"
   ]
 }
