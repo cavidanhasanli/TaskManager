@@ -7,7 +7,7 @@ DATABASE_NAME = environ.get("MYSQL_DATABASE")
 USER = environ.get("MYSQL_USER")
 PASSWORD = environ.get("MYSQL_PASSWORD")
 HOST = environ.get("MYSQL_HOST")
-PORT = int(environ.get("MYSQL_PORT"))
+PORT = environ.get("MYSQL_PORT")
 
 db_state_default = {"closed": None, "conn": None, "ctx": None, "transactions": None}
 db_state = ContextVar("db_state", default=db_state_default.copy())
