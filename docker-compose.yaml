@@ -1,0 +1,60 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    restart: always
+    links:
+      - database
+    depends_on:
+      - "database"
+      - "rabbitmq"
+      - "celery"
+    volumes:
+      - .:/app
+    command: bash -c "pem watch && pem migrate && uvicorn app.main:app --reload --host 0.0.0.0"
+  
+
+  rabbitmq:
+      image: rabbitmq:3-management-alpine
+      container_name: 'rabbitmq'
+      hostname: rabbitmq
+      ports:
+          - "5672:5672"
+          - "15672:15672"
+
+
+  celery:
+    container_name: "celery"
+    build:
+      context: .
+    env_file:
+      - .env
+    links:
+      - rabbitmq
+      - database
+    depends_on:
+      - "rabbitmq"
+      - "database"
+    command: bash -c "celery -A task.worker worker -l INFO"
+
+
+
+  database:
+    image: mysql:5.7
+    env_file:
+      - .env
+    ports:
+      - "3306:3306"
+    restart: always
+    volumes:
+      - db_data:/var/lib/mysql
+
+
+
+volumes:
+  db_data:
