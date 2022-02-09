@@ -15,7 +15,7 @@ services:
       - "rabbitmq"
       - "celery"
     volumes:
-      - .:/app
+      - .:/code
     command: bash -c "pem watch && pem migrate && uvicorn backend.app.main:app --reload --host 0.0.0.0"
   
 
