@@ -1,3 +1,5 @@
+from typing import Optional
+
 import bcrypt
 from fastapi_jwt_auth import AuthJWT
 from passlib.context import CryptContext
@@ -28,13 +30,17 @@ class Authenticate:
         return pwd_context.verify(password + salt, hashed_pw)
 
     @staticmethod
-    def create_access_token_for_user(*, user: UserInDB, Authorize: AuthJWT) -> str:
+    def create_access_token_for_user(
+        *, user: UserInDB, Authorize: AuthJWT
+    ) -> Optional[str]:
         if not user or not isinstance(user, UserInDB):
             return None
         return Authorize.create_access_token(subject=user.user_name)
 
     @staticmethod
-    def create_refresh_token_for_user(*, user: UserInDB, Authorize: AuthJWT) -> str:
+    def create_refresh_token_for_user(
+        *, user: UserInDB, Authorize: AuthJWT
+    ) -> Optional[str]:
         if not user or not isinstance(user, UserInDB):
             return None
         return Authorize.create_refresh_token(subject=user.user_name)

@@ -1,6 +1,7 @@
+import peewee
 from fastapi import HTTPException
 
-from user import auth_service
+from backend.user import auth_service
 
 from .models import User
 from .schemas import UserCreate, UserInDB
@@ -12,8 +13,15 @@ async def create_user(new_user: UserCreate) -> UserInDB:
     )
     new_user_params = new_user.copy(update=new_password.dict())
     new_user_updated = UserInDB(**new_user_params.dict())
-    created_user = User(**new_user_updated.dict())
-    created_user.save()
+    try:
+        created_user = User(**new_user_updated.dict())
+        created_user.save()
+    except peewee.PeeweeException as err:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Database Operation failed with {str(err)}",
+            headers={"X-Error": f"Database Operation failed with {str(err)}"},
+        )
 
     return UserInDB.from_orm(created_user)
 

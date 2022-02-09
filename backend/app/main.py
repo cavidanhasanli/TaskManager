@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.core.config import settings
-from task.api.controller import router as task_router
-from user.api.controller import router as user_router
+from backend.app.core.config import settings
+from backend.task.api.controller import router as task_router
+from backend.user.api.controller import router as user_router
 
 
 def get_application():

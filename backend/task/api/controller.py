@@ -1,7 +1,7 @@
 from celery.result import AsyncResult
 from fastapi import APIRouter
 
-from task.worker import celery, get_ip_details
+from backend.task.worker import celery, get_ip_details
 
 from ..models import UserIpDetail
 from ..schemas import UserIp

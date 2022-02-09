@@ -16,7 +16,7 @@ services:
       - "celery"
     volumes:
       - .:/app
-    command: bash -c "pem watch && pem migrate && uvicorn app.main:app --reload --host 0.0.0.0"
+    command: bash -c "pem watch && pem migrate && uvicorn backend.app.main:app --reload --host 0.0.0.0"
   
 
   rabbitmq:
@@ -40,7 +40,7 @@ services:
     depends_on:
       - "rabbitmq"
       - "database"
-    command: bash -c "celery -A task.worker worker -l INFO"
+    command: bash -c "celery -A backend.task.worker worker -l INFO"
 
 
 

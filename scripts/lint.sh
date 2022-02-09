@@ -3,6 +3,6 @@
 set -e
 set -x
 
-flake8 app user tests
-black app user tests --check --diff
-isort app user tests --check --diff
+flake8 backend
+black backend --check --diff
+isort backend --check --diff

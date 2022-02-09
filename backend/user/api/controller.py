@@ -1,8 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import JSONResponse
 from fastapi_jwt_auth import AuthJWT
+from fastapi_jwt_auth.exceptions import AuthJWTException
 from pydantic import BaseModel
 
-from user import auth_service
+from backend.app.main import get_application
+from backend.user import auth_service
 
 from ..schemas import (
     AccessToken,
@@ -14,6 +17,7 @@ from ..schemas import (
 )
 
 router = APIRouter()
+app = get_application()
 
 
 class Settings(BaseModel):
@@ -23,6 +27,11 @@ class Settings(BaseModel):
 @AuthJWT.load_config
 def get_config():
     return Settings()
+
+
+@app.exception_handler(AuthJWTException)
+def authjwt_exception_handler(request: Request, exc: AuthJWTException):
+    return JSONResponse(status_code=exc.status_code, content={"detail": exc.message})
 
 
 @router.post(
@@ -62,7 +71,7 @@ async def user_login(user: UserLogin, Authorize: AuthJWT = Depends()) -> UserPub
         return UserPublic(
             **found_user.dict(),
             access_token=access_token.access_token,
-            refresh_token=refresh_token.refresh_token
+            refresh_token=refresh_token.refresh_token,
         )
     raise HTTPException(status_code=401, detail="Incorrect password provided")
 
@@ -79,9 +88,15 @@ def refresh(Authorize: AuthJWT = Depends()) -> AccessToken:
 async def user(Authorize: AuthJWT = Depends()):
     from ..crud import get_user_by_username
 
-    Authorize.jwt_required()
+    try:
+        Authorize.jwt_required()
 
-    current_user = Authorize.get_jwt_subject()
-    found_user = await get_user_by_username(user_name=current_user)
+        current_user = Authorize.get_jwt_subject()
+        found_user = await get_user_by_username(user_name=current_user)
+    except Exception as err:
+        print(err)
+        raise HTTPException(
+            status_code=400, detail=f"JWT Operation failed with {str(err)}"
+        )
 
     return {"user": current_user, "email": found_user.email}

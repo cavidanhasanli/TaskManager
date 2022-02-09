@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import EmailStr, constr, validator
 
-from app.schemas import CoreModel, DateTimeModelMixin
+from backend.app.schemas import CoreModel, DateTimeModelMixin
 
 
 # simple check for valid user_name
