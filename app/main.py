@@ -7,7 +7,7 @@ from user.api.controller import router as user_router
 
 
 def get_application():
-    _app = FastAPI(title=settings.PROJECT_NAME)
+    _app = FastAPI(title=settings.PROJECT_NAME,docs_url='/')
 
     _app.add_middleware(
         CORSMiddleware,
