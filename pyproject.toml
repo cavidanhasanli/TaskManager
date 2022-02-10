@@ -19,6 +19,7 @@ celery = "^5.2.3"
 ipdata = "^3.4.3"
 SQLAlchemy = "^1.4.31"
 mysqlclient = "^2.1.0"
+pytest = "^5.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

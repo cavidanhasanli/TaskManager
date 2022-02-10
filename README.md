@@ -1,40 +1,44 @@
 # TaskManager
 
-This project was generated via [manage-fastapi](https://ycd.github.io/manage-fastapi/)! :tada:
+## How to start
 
-Welcome to my project. First of all, I would like to inform you that new generation technologies have been used in this project, and below I will present you a list of those technologies.
+Simply enough:
 
-```angular2html
-Python 3.9
-FastAPI
-fastapi-jwt-auth for JWT auth
-Peewee
-Celery + RabbitMQ
-RestAPI
-Swagger
-Unit test
-Docker
-```
+`docker-compose up --build`
 
-Now let's move on to the main idea of ​​the project. Project 2 consists of a section Users and Tasks section. A new user is created. Then a token is generated when that user logs in. If that token becomes invalid, then the reflesh token is generated. Then the user creates a task (IP request: https://ipdata.co/)
-This task is saved to the database. You can then use the status endpoint to view the status of that task.
+## How to test
 
-Now let's talk about how to start this project.
+To run all unit tests:
 
-#git clone
+`docker-compose run app pytest -vvv`
 
-```
-$ git@github.com: cavidanhasanli / TaskManager.git
-```
+> Please keep in mind that the tests are not optimized to run locally
 
-#docker build up
+Also, you can find postman exported json file in this repo, just import it in Postman and you will have necessary endpoints to test.
+The file name is `Task.postman_collection.json`.
 
-```
-$ docker-compose up --build
-```
+## Project dependencies
 
-The project is available in the test section:
+The project dependency management is based on `Poetry`.
 
-```angular2html
-$ 
-```
+## Migrations
+
+Peewee migrations are managed by `peewee-migrations` package.
+Migrations located in migrations folder and settings is `migrations.json`.
+
+## Additional notes
+
+There is a scripts folder where I have defined helper bash scripts for formatting and linting the code base.
+All codebase was formatted using black, flake8 and isort.
+
+You can run it manually:
+
+`./scripts/format-imports.sh`
+
+Also there is a `lint.sh` file which can be added to the Github workflow.
+
+This action was defined as pre-commit hook, at each commit it will reformat your code base.
+For activating pre-commit run locally:
+`pre-commit install`
+
+At each commit you will have nicely formatted code base.

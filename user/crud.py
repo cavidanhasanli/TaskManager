@@ -20,14 +20,18 @@ async def create_user(new_user: UserCreate) -> UserInDB:
         raise HTTPException(
             status_code=400,
             detail=f"Database Operation failed with {str(err)}",
-            headers={"X-Error": f"Database Operation failed with {str(err)}"},
-        )
+            headers={"X-Error": f"Database Operation failed with {err}"},
+        ) from err
 
     return UserInDB.from_orm(created_user)
 
 
 async def get_user_by_username(user_name: str) -> UserInDB:
-    found_user = User.get(User.user_name == user_name)
-    if found_user:
-        return UserInDB.from_orm(found_user)
-    raise HTTPException(status_code=404, detail="User with given username not found")
+    try:
+        found_user = User.get(User.user_name == user_name)
+        if found_user:
+            return UserInDB.from_orm(found_user)
+    except peewee.DoesNotExist as err:
+        raise HTTPException(
+            status_code=404, detail="User with given username not found"
+        ) from err

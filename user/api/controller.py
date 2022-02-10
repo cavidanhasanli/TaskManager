@@ -62,7 +62,7 @@ async def user_login(user: UserLogin, Authorize: AuthJWT = Depends()) -> UserPub
         return UserPublic(
             **found_user.dict(),
             access_token=access_token.access_token,
-            refresh_token=refresh_token.refresh_token
+            refresh_token=refresh_token.refresh_token,
         )
     raise HTTPException(status_code=401, detail="Incorrect password provided")
 
@@ -86,7 +86,7 @@ async def user(Authorize: AuthJWT = Depends()):
         found_user = await get_user_by_username(user_name=current_user)
     except Exception as err:
         raise HTTPException(
-            status_code=400, detail=f"JWT Operation failed with {str(err)}"
-        )
+            status_code=400, detail=f"JWT Operation failed with {err}"
+        ) from err
 
     return {"user": current_user, "email": found_user.email}

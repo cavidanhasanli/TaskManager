@@ -24,6 +24,7 @@ class User(peewee.Model):
 class UserIpDetail(peewee.Model):
     ip = CharField(max_length=255)
     details = CharField(max_length=255)
+    user_id = snapshot.ForeignKeyField(backref='useripdetail', index=True, model='user', on_delete='CASCADE')
     class Meta:
         table_name = "useripdetail"
 
