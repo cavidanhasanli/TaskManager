@@ -21,7 +21,6 @@ async def create_task(ip: UserIp):
         ip_detail_obj = UserIpDetail(ip=ip.address, details=result)
         ip_detail_obj.save()
     except Exception as err:
-        print(err)
         raise HTTPException(
             status_code=400, detail=f"Task not created: {str(err)}"
         )
