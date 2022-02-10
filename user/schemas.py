@@ -75,6 +75,7 @@ class UserInDB(DateTimeModelMixin, UserBase):
     Add in id, created_at, updated_at, and user's password and salt
     """
 
+    id: Optional[int]
     password: constr(min_length=7, max_length=100)
     salt: str
 
@@ -85,8 +86,8 @@ class UserInDB(DateTimeModelMixin, UserBase):
 class UserPublic(DateTimeModelMixin, UserBase):
     user_name: str
     email: EmailStr
-    access_token: str
-    refresh_token: str
+    access_token: Optional[str]
+    refresh_token: Optional[str]
 
     class Config:
         orm_mode = True
