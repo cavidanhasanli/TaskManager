@@ -9,11 +9,12 @@ def test_app():
     client = TestClient(app)
     yield client
 
+
 def test_create_user(test_app):
     response = test_app.post("/api/v1/create", json={
-        "email": "user1@example.com",
-        "password": "strings",
-        "user_name": "string1"
-        })
+        "email": "test_mail@gmail.com",
+        "password": "testpassword",
+        "user_name": "test_user"
+    })
+    print(response.text)
     assert response.status_code == 200
-    
