@@ -1,5 +1,5 @@
 from celery.result import AsyncResult
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from task.worker import celery, get_ip_details
 
@@ -15,10 +15,16 @@ router = APIRouter()
     description="Create task using the IP address",
 )
 async def create_task(ip: UserIp):
-    task = get_ip_details.delay(ip.address)
-    result = task.get()
-    ip_detail_obj = UserIpDetail(ip=ip.address, details=result)
-    ip_detail_obj.save()
+    try:
+        task = get_ip_details.delay(ip.address)
+        result = task.get()
+        ip_detail_obj = UserIpDetail(ip=ip.address, details=result)
+        ip_detail_obj.save()
+    except Exception as err:
+        print(err)
+        raise HTTPException(
+            status_code=400, detail=f"Task not created: {str(err)}"
+        )
 
     return {"task_id": task.id}
 
@@ -29,5 +35,10 @@ async def create_task(ip: UserIp):
     description="Get task status by celery task id",
 )
 async def check_task_status(id: str):
-    result = AsyncResult(id, app=celery)
+    try:
+        result = AsyncResult(id, app=celery)
+    except Exception as err:
+        raise HTTPException(
+            status_code=400, detail=f"Status check failed: {str(err)}"
+        )
     return {"status": result.state}

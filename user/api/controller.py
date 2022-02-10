@@ -79,9 +79,14 @@ def refresh(Authorize: AuthJWT = Depends()) -> AccessToken:
 async def user(Authorize: AuthJWT = Depends()):
     from ..crud import get_user_by_username
 
-    Authorize.jwt_required()
+    try:
+        Authorize.jwt_required()
 
-    current_user = Authorize.get_jwt_subject()
-    found_user = await get_user_by_username(user_name=current_user)
+        current_user = Authorize.get_jwt_subject()
+        found_user = await get_user_by_username(user_name=current_user)
+    except Exception as err:
+        raise HTTPException(
+            status_code=400, detail=f"JWT Operation failed with {str(err)}"
+        )
 
     return {"user": current_user, "email": found_user.email}
